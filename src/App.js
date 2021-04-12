@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect, useState} from 'react';
+import axios from 'axios';
+import './reset.css';
+import './App.scss';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+    const [breeds, setBreeds] = useState(null);
+    useEffect(() => {
+        axios({
+            method: 'get',
+            url: 'https://dog.ceo/api/breeds/list/all'
+        }).then(response => {
+            if (response.status === 200) {
+                setBreeds(Object.keys(response.data.message));
+            }
+        }).catch(e => {
+            console.log(e);
+        })
+    }, []);
+    return (
+        <div className="main__container">
+            <h1 className="main__title">DOG BREEDS</h1>
+            {!breeds && <p>loading...</p>}
+            {breeds &&
+            <ol className="main__list">
+                {breeds.map(breed => {
+                    return <li className="main__breed" key={breed}>{breed}</li>
+                })}
+            </ol>}
+        </div>
+    );
+};
 
 export default App;
