@@ -1,0 +1,30 @@
+.modal {
+  &__container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__contents {
+    min-width: 200px;
+    min-height: 100px;
+    background-color: beige;
+    padding: 20px;
+    //visibility: visible;
+    &.hidden {
+      display: none;
+    }
+
+    img {
+      width: 100px;
+      height: 100px;
+    }
+  }
+}
