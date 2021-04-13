@@ -30,31 +30,26 @@ const Modal = (prop) => {
     }, [prop.selectedBreed]);
 
     useEffect(() => {
-        console.log('isAllImageLoaded', isAllImageLoaded)
         let r = true;
         isAllImageLoaded.map(v => {
             if (!v) r = false
         })
-        if (r) setLoading(false);
+        if (r) {
+            setLoading(false);
+            prop.setShowLoader(false);
+        }
     }, [isAllImageLoaded]);
 
     const updateImage = (idx) => {
-        console.log('updateImage', idx)
         const imageListCopy = [...isAllImageLoaded];
         imageListCopy[idx] = true;
         setIsAllImageLoaded(imageListCopy);
     }
 
-    useEffect(() => {
-        console.log('loading', loading);
-    }, [loading])
-
     if (prop.showModal) return (
         <div className="modal__container">
             {/*<div className="modal__contents" ref={myRef} onClick={handleClickInside}>*/}
             <div className={loading? "modal__contents hidden" : "modal__contents"}>
-            {/*<div className="modal__contents">*/}
-
                 <h1>{prop.selectedBreed.name}</h1>
                 <div><img src={prop.selectedBreed.img} alt={prop.selectedBreed}
                           onLoad={() => updateImage(0)}/>

@@ -3,27 +3,33 @@ import axios from 'axios';
 import './reset.css';
 import './App.scss';
 import Modal from './components/Modal';
+import Loader from "./components/Loader";
 
 const App = () => {
     const [breeds, setBreeds] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [showLoader, setShowLoader] = useState(false);
     const [selectedBreed, setSelectedBreed] = useState(null);
 
     useEffect(() => {
+        setShowLoader(true);
         axios({
             method: 'get',
             url: 'https://dog.ceo/api/breeds/list/all'
         }).then(response => {
+            setShowLoader(false);
             if (response.status === 200) {
                 setBreeds(response.data.message);
                 console.log(response.data.message);
             }
         }).catch(e => {
+            setShowLoader(false);
             console.log(e);
         })
     }, []);
 
     const setModal = async (selectedBreedName) => {
+        setShowLoader(true);
         const breedImg = await getRandomImage(false, selectedBreedName);
         const subBreedImgList = [];
 
@@ -63,6 +69,7 @@ const App = () => {
     return (
         <>
             <div className="main__container">
+                <Loader showLoader={showLoader} />
                 <h1 className="main__title">DOG BREEDS</h1>
                 {!breeds && <p>loading...</p>}
                 {breeds &&
@@ -78,7 +85,7 @@ const App = () => {
                     })}
                 </ol>}
             </div>
-            <Modal showModal={showModal} setShowModal={setShowModal} selectedBreed={selectedBreed}/>
+            <Modal showModal={showModal} setShowLoader={setShowLoader} setShowModal={setShowModal} selectedBreed={selectedBreed}/>
         </>
     );
 };
