@@ -28,3 +28,29 @@
     }
   }
 }
+
+
+.heart {
+  position: relative;
+  top: 5px;
+  width: 30px;
+  cursor: pointer;
+
+  &.red {
+    fill : #ce1212;
+    &:hover {
+      animation: pulse 1s ease infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+  }
+
+  &.gray {
+    fill : #bdc7c9;
+  }
+}

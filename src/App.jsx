@@ -10,6 +10,8 @@ const App = () => {
     const [showModal, setShowModal] = useState(false);
     const [showLoader, setShowLoader] = useState(false);
     const [selectedBreed, setSelectedBreed] = useState(null);
+    const [favoriteList, setFavoriteList] = useState([]);
+    const [filterByFavorite, setFilterByFavorite] = useState(false);
 
     useEffect(() => {
         setShowLoader(true);
@@ -65,27 +67,64 @@ const App = () => {
         })
     }
 
+    const addToFavorite = () => {
+        const listCopy = [...favoriteList];
+        const selectedBreedIndex = listCopy.indexOf(selectedBreed.name);
+        if (selectedBreedIndex > -1) listCopy.splice(selectedBreedIndex, 1);
+        else listCopy.push(selectedBreed.name);
+
+        setFavoriteList(listCopy);
+    };
+
+    useEffect(() => {
+        console.log('favoriteList', favoriteList)
+    }, [favoriteList])
+
 
     return (
         <>
             <div className="main__container">
-                <Loader showLoader={showLoader} />
+                <Loader showLoader={showLoader}/>
                 <h1 className="main__title">DOG BREEDS</h1>
                 {!breeds && <p>loading...</p>}
                 {breeds &&
-                <ol className="main__list">
-                    {Object.keys(breeds).map(breed => {
-                        return <li className="main__breed"
-                                   key={breed}
-                                   onClick={() => {
-                                       setModal(breed)
-                                   }}>
-                            {breed}
-                        </li>
-                    })}
-                </ol>}
+                <div>
+                    <input type="checkbox" name="filter" onClick={() => {
+                        setFilterByFavorite(!filterByFavorite)
+                    }}/>
+                    <label htmlFor="filter">filter by favorite</label>
+                    <ol className="main__list">
+                        {!filterByFavorite && Object.keys(breeds).map(breed => {
+                            return <li className="main__breed"
+                                       key={breed}
+                                       onClick={() => {
+                                           setModal(breed)
+                                       }}>
+                                {breed}
+                            </li>
+                        })}
+
+                        {filterByFavorite && Object.keys(breeds).map(breed => {
+                            if (favoriteList.includes(breed)) {
+                                return <li className="main__breed"
+                                           key={breed}
+                                           onClick={() => {
+                                               setModal(breed)
+                                           }}>
+                                    {breed}
+                                </li>
+                            }
+                        })}
+
+                    </ol>
+                </div>
+                }
             </div>
-            <Modal showModal={showModal} setShowLoader={setShowLoader} setShowModal={setShowModal} selectedBreed={selectedBreed}/>
+            <Modal showModal={showModal} setShowLoader={setShowLoader} setShowModal={setShowModal}
+                   selectedBreed={selectedBreed}
+                   favorteList={favoriteList}
+                   addToFavorite={addToFavorite}
+            />
         </>
     );
 };

@@ -1,5 +1,6 @@
 import React, {useRef, useState, useEffect} from 'react';
 import './modal.scss'
+import Heart from "./Heart";
 
 const Modal = (prop) => {
     const [clickedOutside, setClickedOutside] = useState(false);
@@ -7,20 +8,21 @@ const Modal = (prop) => {
     const [loading, setLoading] = useState(true);
     const myRef = useRef();
 
-    // const handleClickOutside = e => {
-    //     if (prop.showModal && !myRef.current.contains(e.target)) setClickedOutside(true);
-    // };
-    // const handleClickInside = () => setClickedOutside(false);
-    //
-    // useEffect(() => {
-    //     document.addEventListener('mousedown', handleClickOutside);
-    //     return () => document.removeEventListener('mousedown', handleClickOutside);
-    // });
+    const handleClickOutside = e => {
+        console.log('handleClickOutside', e.target)
+        if (prop.showModal && !myRef.current.contains(e.target)) setClickedOutside(true);
+    };
+    const handleClickInside = () => setClickedOutside(false);
 
-    // useEffect(() => {
-    //     console.log('clickedOutside', clickedOutside)
-    //     if (clickedOutside) prop.setShowModal(false);
-    // }, [clickedOutside])
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    });
+
+    useEffect(() => {
+        console.log('clickedOutside', clickedOutside)
+        if (clickedOutside) prop.setShowModal(false);
+    }, [clickedOutside])
 
     useEffect(() => {
         if (prop.selectedBreed && prop.selectedBreed.sub.length > 0) {
@@ -48,8 +50,16 @@ const Modal = (prop) => {
 
     if (prop.showModal) return (
         <div className="modal__container">
-            {/*<div className="modal__contents" ref={myRef} onClick={handleClickInside}>*/}
-            <div className={loading? "modal__contents hidden" : "modal__contents"}>
+            <div className={loading ? "modal__contents hidden" : "modal__contents"} ref={myRef}
+                 onClick={handleClickInside}>
+                {/*<div className={loading? "modal__contents hidden" : "modal__contents"}>*/}
+                <div>
+                    <span onClick={prop.addToFavorite}><Heart favorite={prop.favorteList.includes(prop.selectedBreed.name)}/></span>
+                    {prop.favorteList.includes(prop.selectedBreed.name)
+                        ? <span>remove from favorite</span>
+                        : <span>add to favorite</span>
+                        }
+                </div>
                 <h1>{prop.selectedBreed.name}</h1>
                 <div><img src={prop.selectedBreed.img} alt={prop.selectedBreed}
                           onLoad={() => updateImage(0)}/>
